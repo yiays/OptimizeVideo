@@ -36,10 +36,10 @@ get_info() {
 	if [[ "$height" -gt 1500 ]]; then # 4K-ish video
 		t_bitrate=6000
 		t_quality=24
-	elif [[ "$height" -gt 900 ]]; then # 2K-ish video
+	elif [[ "$height" -gt 800 ]]; then # 2K-ish video
 		t_bitrate=1700
 		t_quality=32
-	elif [[ "$height" -gt 600 ]]; then # HD video
+	elif [[ "$height" -gt 500 ]]; then # HD video
 		t_bitrate=850
 		t_quality=33
 	else # DVD video
