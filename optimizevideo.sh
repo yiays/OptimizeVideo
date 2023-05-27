@@ -25,7 +25,8 @@ get_info() {
 	if [[ -n "$height" ]]; then
 		echo "Video specs found. Codec: $codec, Bit rate: $bitrate, Height: $height"
 	else
-		echo "Failed to fetch video specs. Deferring to default specs."
+		echo "Failed to fetch video specs. Skipping this file."
+		skip=1
 		return 0
 	fi
 	# Decide what to do based on gathered information
@@ -36,30 +37,34 @@ get_info() {
 		t_bitrate=6000
 		t_quality=24
 	elif [[ "$height" -gt 900 ]]; then # 2K-ish video
-		t_bitrate=1500
-		t_quality=33
+		t_bitrate=1700
+		t_quality=32
 	elif [[ "$height" -gt 600 ]]; then # HD video
-		t_bitrate=768
-		t_quality=34
+		t_bitrate=850
+		t_quality=33
 	else # DVD video
-		t_bitrate=400
-		t_quality=36
+		skip=1
+		#echo "skip reason: dvd quality"
+		return 0
 	fi
 	#second, check if these settings will save space in practice
 	if [[ -n "$bitrate" ]] && [[ "$bitrate" -lt "$t_bitrate" ]]; then
 		# this will likely take up a similar amount of space compared to the original
 		skip=1
 		#echo "skip reason: bitrate"
+		return 0
 	elif [[ "$codec" == "vp9" ]]; then
 		# don't transcode videos that are already using VP9, trust that they were encoded efficiently from the start
 		skip=1
 		#echo "skip reason: vp9"
 		# you may want to override this
+		return 0
 	elif [[ "$codec" == "hevc" ]]; then
 		# don't transcode videos that are encoded with H.265, this format is technically more space efficient
 		skip=1
 		#echo "skip reason: hevc"
 		# you may want to override this
+		return 0
 	fi
 }
 
